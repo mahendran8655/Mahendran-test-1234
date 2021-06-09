@@ -7,3 +7,4 @@ Solution:
 6)perform regression test, perf test and other security testing. Once got sign off from QA then deploy in preprod
 7)perform test again then deploy the code in prod by using blue-green strategy
 8)If any cases with new code we can revert with previous version build
+9)Based on live traffic to service we can increase pod min and max size with cpu threshold by HPA
