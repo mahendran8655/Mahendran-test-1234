@@ -1,0 +1,9 @@
+Solution:
+1)Create kubernetes Dev, Stage environment and cloud sql db
+2)Create separate namespace for frontend and backend service, then deploy the service in respective namespace as deployment/replicaset with replicas in the respective kubernetes environemnt
+3)Configure the db using cloud sql/clous spanner and update the db details in service configmap and secrets or update the details in vault then update the configuraiton details
+4)Create Preprod and Prod environment with respective namespace
+5)Deployed the developed in dev environment. Once properly tested promote the Docker image and deploy in stage. 
+6)perform regression test, perf test and other security testing. Once got sign off from QA then deploy in preprod
+7)perform test again then deploy the code in prod by using blue-green strategy
+8)If any cases with new code we can revert with previous version build
