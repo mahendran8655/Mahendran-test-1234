@@ -6,5 +6,8 @@ and output hello world.
 this time you can log into the container and kill process pid 1, but
 the container will not die so you can continue to troubleshoot
 and restart the service while in the container.
+service nginx restart
+
 3. How do you start a container and expose a port 8080 and make
 your host volume on /var/www be available in the container?
+docker run -it --rm -d -p 8080:8080 --name c -v ~/localhost:/usr/share/nginx/html <containername>
