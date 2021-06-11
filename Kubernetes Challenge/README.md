@@ -15,5 +15,67 @@ Step4:
  Create namepace 
  kubectl create ns development
  
-Step5: Deploy PHP service with Mongo db
+Step5: Deploy guest book
+
+Step 5.1: Deploy Mongo DB
+kubectl apply -f mongo-deployment.yaml
+Step 5.2: kubectl get pods -n development
+Step5.3:
+Deploy the mondo db service
+kubectl apply -f mongo-service.yaml
+kubectl get service -n development
+step5.4:
+kubectl apply -f frontend-deployment.yaml
+kubectl get services -n development
+step5.5:
+port forward in terminal
+kubectl port-forward svc/frontend 8080:80
+
+**Installing Helm:**
+Step1:
+cd /tmp
+curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > install-helm.sh
+Step2:
+chmod u+x install-helm.sh
+./install-helm.sh
+
+Step3: Installing Tiller
+kubectl -n kube-system create serviceaccount tiller
+
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+
+helm init --service-account tiller
+
+kubectl get pods --namespace kube-system
+
+Step4: Installing a Helm Chart
+helm install stable/kubernetes-dashboard --name dashboard-demo
+helm list
+kubectl get services
+
+Step5: Updating a Release
+helm upgrade dashboard-demo stable/kubernetes-dashboard --set fullnameOverride="dashboard"
+kubectl get services
+
+**Prometheus Setup**
+1)kubectl create namespace monitoring or kubectl create ns monitoring
+
+2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Reference: https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
+https://www.digitalocean.com/community/tutorials/how-to-install-software-on-kubernetes-clusters-with-the-helm-2-package-manager
+
