@@ -78,6 +78,15 @@ kubectl create -f service.yaml
 kubectl port-forward -n monitoring <grafana-pod-name> 3000 &
     
 
+**ELK**
+ 
+Step1: Helm init
+
+Step2: Deploying Elastic search 
+    Helm repo add elastic https://Helm.elastic.co
+Step3:
+    Install the Elasticsearch Helm chart using the configuration
+    Helm install --name elasticsearch elastic/elasticsearch -f ./values.yaml 
 
 
 
