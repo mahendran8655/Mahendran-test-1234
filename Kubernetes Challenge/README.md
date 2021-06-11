@@ -86,7 +86,14 @@ Step2: Deploying Elastic search
     Helm repo add elastic https://Helm.elastic.co
 Step3:
     Install the Elasticsearch Helm chart using the configuration
-    Helm install --name elasticsearch elastic/elasticsearch -f ./values.yaml 
+    Helm install --name elasticsearch elastic/elasticsearch -f helm-config.yaml 
+    
+Step4: deploy kibana
+    Helm install --name kibana elastic/kibana 
+    
+STep5: 
+    Helm install --name metricbeat elastic/metricbeat
+    
 
 
 
