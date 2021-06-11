@@ -60,7 +60,8 @@ kubectl get services
 **Prometheus Setup**
 1)kubectl create namespace monitoring or kubectl create ns monitoring
 
-2)
+2)Create a file named clusterRole.yaml and copy the following RBAC role.
+
 
 
 
