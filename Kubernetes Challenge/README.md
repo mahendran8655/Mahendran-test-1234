@@ -106,7 +106,12 @@ Once we make sure the version running in green is working well, we’ll switch t
 
 ![image](https://user-images.githubusercontent.com/22277504/121729136-bfed2280-cb0b-11eb-9a79-e095cc12fda7.png)
 Deployment is complete once users are switched to the new version running on green
+ 
     
+**Canary Deployment**
+    canary deployment is the practice of making staged releases. We roll out a software update to a small part of the users first, so they may test it and provide feedback. Once the change is accepted, the update is rolled out to the rest of the users.
+
+Canary deployments show us how users interact with application changes in the real world. As in blue-green deployments, the canary strategy offers no-downtime upgrades and easy rollbacks. Unlike blue-green, canary deployments are smoother, and failures have limited impact.
 
 
 Reference: https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
