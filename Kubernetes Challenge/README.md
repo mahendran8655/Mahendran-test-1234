@@ -60,19 +60,23 @@ kubectl get services
 **Prometheus Setup**
 1)kubectl create namespace monitoring or kubectl create ns monitoring
 
-2)Create a file named clusterRole.yaml and copy the following RBAC role.
+2)Create a file named clusterRole.yaml 
+kubectl create -f clusterRole.yaml
+3) Create configmap, deployment and service
+kubectl create -f config-map.yaml
+kubectl create  -f prometheus-deployment.yaml 
+kubectl create -f prometheus-service.yaml --namespace=monitoring
+kubectl port-forward <prometheus-pod-name> 8080:9090 -n monitoring
+kubectl create -f ingress-controller.yaml
 
+****Grafana Setup****
 
-
-
-
-
-
-
-
-
-
-
+Create configmap, deployment, service
+kubectl create -f grafana-datasource-config.yaml
+kubectl create -f deployment.yaml
+kubectl create -f service.yaml
+kubectl port-forward -n monitoring <grafana-pod-name> 3000 &
+    
 
 
 
