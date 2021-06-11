@@ -94,7 +94,19 @@ Step4: deploy kibana
 STep5: 
     Helm install --name metricbeat elastic/metricbeat
     
+**Blue-Green Deployment**
+    
+Blue/green Deployment
+The basis of the blue-green method is side-by-side deployments. For that, we need two separate but identical environments. And I mean environment in the most general way, including servers, virtual machines, containers, configurations, databases, among other things. Sometimes we can use different boxes. Other times we can use separate virtual machines running on the same hardware. Or they can be different containers running in a single device.
 
+Blue and green take turns to play the role of production. Only one of the environments is live at any given time. Say, for instance, that blue is active. In that case, it receives all the traffic—meanwhile, green acts as a staging area, where we can deploy and test the next version.
+    ![image](https://user-images.githubusercontent.com/22277504/121729039-a51aae00-cb0b-11eb-9a89-beaba3baab67.png)
+            Users continue accessing v1 on blue while the new v2 release is deployed on green.
+Once we make sure the version running in green is working well, we’ll switch the route. Then the cycle begins again.
+
+![image](https://user-images.githubusercontent.com/22277504/121729136-bfed2280-cb0b-11eb-9a79-e095cc12fda7.png)
+Deployment is complete once users are switched to the new version running on green
+    
 
 
 Reference: https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
