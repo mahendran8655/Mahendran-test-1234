@@ -1,0 +1,255 @@
+1. How do you disable ipv6 in CentOS, Ubuntu, etc. and how would
+you check that it’s disabled.
+1. Edit /etc/default/grub and add ipv6.disable=1 in line GRUB_CMDLINE_LINUX, e.g.:
+
+
+ 
+# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="ipv6.disable=1 crashkernel=auto rhgb quiet"
+GRUB_DISABLE_RECOVERY="true"
+2. Regenerate a GRUB configuration file and overwrite existing one:
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+3. Restart system and verify no line “inet6” in “ip addr show” command output.
+
+# shutdown -r now
+# ip addr show | grep net6
+
+please refer this link for more details
+https://www.thegeekdiary.com/centos-rhel-7-how-to-disable-ipv6/
+
+2.You have an instance in AWS, you expand the root volume from
+the gui, how do you resize it without rebooting?
+
+
+1. Modify volume in AWS EC2 UI
+After login to AWS console, navigate to EC2 -> Elastic Block Store -> Volumes. Click on the volume that you wist to resize, then select Actions -> Modify Volume. It will open a popup.
+
+i) Enter the new size in the size field. Lets says we are resizing from 8 GB to 150 GB.
+ii) Click Modify button
+iii) Click Yes button in the confirm popup.
+Now the volume has been resized, but it won't reflect in the system. We need to do some more steps to make it work.
+
+2. Resize the partition
+Lets ssh into the machine.
+
+i) List block devices attached to the machine.
+lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0     7:0    0   91M  1 loop /snap/core/6350
+loop1     7:1    0   18M  1 loop /snap/amazon-ssm-agent/930
+loop2     7:2    0 89.4M  1 loop /snap/core/6818
+loop3     7:3    0 17.9M  1 loop /snap/amazon-ssm-agent/1068
+xvda    202:0    0  150G  0 disk
+└─xvda1 202:1    0    8G  0 part /
+You can see that xvda1 is still 8 GB. Lets increase the partition to disk size.
+
+ii) Install cloud-guest-utils
+apt install cloud-guest-utils
+iii) Grow the partition
+growpart /dev/xvda 1
+iv) Let's check the partition size (you can see /dev/xvda1 is now 150 GB):
+lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0     7:0    0   91M  1 loop /snap/core/6350
+loop1     7:1    0   18M  1 loop /snap/amazon-ssm-agent/930
+loop2     7:2    0 89.4M  1 loop /snap/core/6818
+loop3     7:3    0 17.9M  1 loop /snap/amazon-ssm-agent/1068
+xvda    202:0    0  150G  0 disk
+└─xvda1 202:1    0  150G  0 part /
+3. Resize the file system
+i) Check the file system size. (Still it shows only 8 GB)
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      7.8G  4.9G  2.6G  62% /
+ii) Resize the filesystem
+resize2fs /dev/xvda1
+iii) Check after resizing
+df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      146G  4.9G  141G   3% /
+So we have increased the EBS volume without rebooting and zero downtime.
+
+
+3.How do you configure limits for memory, file - soft and hard
+limits?
+To display maximum users process or for showing maximum user process limit for the logged-in user.
+
+ulimit -u
+showing maximum users per process
+
+2. For showing the maximum file size a user can have.
+
+ulimit -f
+For showing the maximum file size a user can have
+
+3. For showing maximum memory size for the current user.
+
+ulimit -m
+For showing maximum memory size for the current user.
+
+4. For showing maximum memory size limit.
+
+ulimit -v
+For showing maximum memory size limit.
+
+
+
+
+What are Soft limits and Hard limits in Linux? 
+
+The soft limits are the limits which are allocated for actual processing of application or users while the Hard limits are nothing but an upper bound to the values of soft limits. Hence,  
+
+(soft limits <= hard limit)
+Working with Hard and Soft limit values:
+
+1. For displaying the Hard limit. Hard limits are a restriction to the maximum value of soft limits
+
+ulimit -Hn
+For displaying the Hard limit
+
+2. For displaying Soft Limit. The soft limits are the limits that are there for processing.
+
+ulimit -Sn
+Displaying soft limit values
+
+3. To change Soft Limit values:
+
+sysctl -w fs.file-max=<value>
+Note: Replace <value> with the value you want to set for the soft limit and also remember size can not exceed the Hard Limit!
+
+4. Displaying current Values for opened files
+
+cat /proc/sys/fs/file-max
+Displaying current Values for opened files
+
+
+4.Using LVM, you have a logical volume that is running out of
+space, how would you grow that?
+There are times when it is necessary to add a new logical volume to a host. For example, after noticing that the directory containing virtual disks for my VirtualBox virtual machines was filling up the /home filesystem, I decided to create a new logical volume in which to store the virtual machine data, including the virtual disks. This would free up a great deal of space in my /home filesystem and also allow me to manage the disk space for the VMs independently.
+
+The basic steps for adding a new logical volume are as follows.
+
+If necessary, install a new hard drive.
+Optional: Create a partition on the hard drive.
+Create a physical volume (PV) of the complete hard drive or a partition on the hard drive.
+Assign the new physical volume to an existing volume group (VG) or create a new volume group.
+Create a new logical volumes (LV) from the space in the volume group.
+Create a filesystem on the new logical volume.
+Add appropriate entries to /etc/fstab for mounting the filesystem.
+Mount the filesystem.
+
+5.Setup a Systemd startup for a made up service
+cd /etc/systemd/system
+Create a file named your-service.service and include the following:
+
+[Unit]
+Description=<description about this service>
+
+[Service]
+User=<user e.g. root>
+WorkingDirectory=<directory_of_script e.g. /root>
+ExecStart=<script which needs to be executed>
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+ 
+For Python specific projects which include virtual environment:
+
+
+[Unit]
+Description=<project description>
+
+[Service]
+User=<user e.g. root>
+WorkingDirectory=<path to your project directory>
+Environment="PATH=<path to virtual environment>/bin"
+ExecStart=<path to python script>
+
+[Install]
+WantedBy=multi-user.target
+OR
+
+[Unit]
+Description=<project description>
+
+[Service]
+User=<user e.g. root>
+WorkingDirectory=<path to your project directory>
+ExecStart=/bin/bash -c 'cd /home/ubuntu/project/ && source venv/bin/activate && python test.py'
+
+[Install]
+WantedBy=multi-user.target
+
+ 
+
+Reload the service files to include the new service.
+sudo systemctl daemon-reload
+
+
+Start your service
+sudo systemctl start your-service.service
+
+To check the status of your service
+sudo systemctl status example.service
+
+To enable your service on every reboot
+sudo systemctl enable example.service
+
+To disable your service on every reboot
+sudo systemctl disable example.service
+
+6.How do you check if the system may have run out of file
+descriptors?
+Step # 1 Find Out PID
+To find out PID for mysqld process, enter:
+# ps aux | grep mysqld
+
+OR
+# pidof mysqld
+
+Output:
+
+28290
+Step # 2 List File Opened By a PID # 28290
+Use the lsof command or /proc/$PID/ file system to display open fds (file descriptors), run:
+# lsof -p 28290
+# lsof -a -p 28290
+
+OR
+# cd /proc/28290/fd
+# ls -l | less
+
+You can count open file, enter:
+# ls -l | wc -l
+
+Tip: Count All Open File Handles
+To count the number of open file handles of any sort, type the following command:
+# lsof | wc -l
+
+Sample outputs:
+
+5436
+List File Descriptors in Kernel Memory
+Type the following command:
+# sysctl fs.file-nr
+
+Sample outputs:
+
+fs.file-nr = 1020	0	70000
+Where,
+
+1020 The number of allocated file handles.
+0 The number of unused-but-allocated file handles.
+70000 The system-wide maximum number of file handles.
+You can use the following to find out or set the system-wide maximum number of file handles:
+# sysctl fs.file-max
+
+Sample outputs:
+
+fs.file-max = 70000
