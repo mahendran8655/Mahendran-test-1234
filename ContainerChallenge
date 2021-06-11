@@ -1,0 +1,10 @@
+1.Create a Dockerfile that will run Apache or Nginx on port 8080
+and output hello world.
+
+
+2. Create a Dockerfile that will run Apache or Nginx on port 8080,
+this time you can log into the container and kill process pid 1, but
+the container will not die so you can continue to troubleshoot
+and restart the service while in the container.
+3. How do you start a container and expose a port 8080 and make
+your host volume on /var/www be available in the container?
